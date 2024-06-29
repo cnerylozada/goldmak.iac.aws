@@ -20,7 +20,36 @@ const serverlessConfiguration: AWS = {
         Properties: {
           BucketName: "goldmak.s3.bucket",
           PublicAccessBlockConfiguration: {
-            BlockPublicPolicy: true,
+            BlockPublicPolicy: false,
+          },
+        },
+      },
+      goldmakBucketPolicy: {
+        Type: "AWS::S3::BucketPolicy",
+        Properties: {
+          Bucket: {
+            Ref: "goldmakS3Bucket",
+          },
+          PolicyDocument: {
+            Statement: [
+              {
+                Action: ["s3:GetObject"],
+                Effect: "Allow",
+                Resource: {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      {
+                        Ref: "goldmakS3Bucket",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+                Principal: "*",
+              },
+            ],
           },
         },
       },
